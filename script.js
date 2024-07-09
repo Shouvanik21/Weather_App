@@ -42,10 +42,10 @@ form.addEventListener('submit', (e)=>{
     e.preventDefault();
 })
 
-function dayOfTheWeek(day,month,year){
+function dayOfTheWeek(year,month,day){
     const weekday=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    return weekday[new Date(`${day}/${month}/${year}`).getDay()];
-};
+    return weekday[new Date(`${year}/${month}/${day}`).getDay()];
+}
 
 function fetchWeatherData(cityInput){
     fetch(`https://api.weatherapi.com/v1/current.json?key=fc07bcdce45c4b8a8d3211322240607&q=${cityInput}`)
@@ -59,18 +59,17 @@ function fetchWeatherData(cityInput){
 
         const date= data.location.localtime;
         const y=parseInt(date.substr(0,4));
-        const m=parseInt(date.substr(5,2));
-        const d=parseInt(date.substr(8,2));
+        const m=parseInt(date.substr(5,7));
+        const d=parseInt(date.substr(8,10));
         const time=date.substr(11);
 
-        dateOutput.innerHTML=`${dayOfTheWeek(d, m, y)} ${d}, ${m} ${y}`;
+        dateOutput.innerHTML=`${dayOfTheWeek(y,m,d)} ${d}, ${m} ${y}`;
         timeOutput.innerHTML=time;
 
         nameOutput.innerHTML=data.location.name;
 
-        // const iconId=date.current.condition.icon.substr("//cdn.weatherapi.com/weather/64x64/".length);
-
-        // icon.src="./icons/" + iconId;
+        const iconId=data.current.condition.icon;
+        icon.src=iconId;
 
         cloudOutput.innerHTML= data.current.cloud + "%";
         humidityOutput.innerHTML=data.current.humidity+ "%";
@@ -125,7 +124,7 @@ function fetchWeatherData(cityInput){
             }
 
             app.style.opacity="1";
-        }
+        }        
     })
 
     .catch(() =>{
